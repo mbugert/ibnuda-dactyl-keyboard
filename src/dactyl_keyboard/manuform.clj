@@ -84,6 +84,7 @@
         nrows               (get c :configuration-nrows)
         hide-last-pinky?    (get c :configuration-hide-last-pinky?)
         last-row-count      (get c :configuration-last-row-count)
+        is-pcb?             (get c :configuration-is-pcb?)
         lastrow             (flastrow nrows)
         lastcol             (flastcol ncols)
         cornerrow           (fcornerrow nrows)
@@ -93,7 +94,11 @@
         hide-pinky          (fn [column row]
                               (not (and (= last-row-count :full)
                                         hide-last-pinky?
-                                        (last-pinky-location column row))))]
+                                        (last-pinky-location column row))))
+        key-pcb             (cube 19 19 0.6)
+        target-shape        (if is-pcb?
+                              (translate [0 0 -0.3] key-pcb)
+                              (single-plate c))]
     (apply union
            (for [column (columns inner ncols)
                  row    (rows nrows)
@@ -107,9 +112,10 @@
                           :outie (not (and (= column -1)
                                            (<= cornerrow row)))
                           true)]
-             (->> (single-plate c)
-                  (color [1 1 0])
-                  (key-place c column row))))))
+             (do (println (write-scad (key-place c column row target-shape)))
+                 (->> target-shape
+                      (color [1 1 0])
+                      (key-place c column row)))))))
 
 (defn key-inner-place
   "it generates the placement of the inner column.
@@ -282,6 +288,44 @@
                             (key-place c 3 lastrow   (web-post-br web-thickness)))
        ()))))
 
+(defn pcb-column-connector [c]
+  (let [inner               (get c :configuration-inner-column)
+        init                (case inner
+                              :outie -1
+                              :normie 0
+                              :innie 1)
+        last-row-count      (get c :configuration-last-row-count)
+        ncols               (get c :configuration-ncols)
+        nrows               (get c :configuration-nrows)
+        hide-last-pinky?    (get c :configuration-hide-last-pinky?)
+        web-thickness       (get c :configuration-web-thickness)
+        lastrow             (flastrow nrows)
+        cornerrow           (fcornerrow nrows)
+        middlerow           (fmiddlerow nrows)
+        lastcol             (flastcol ncols)
+        last-pinky-location (fn [column row]
+                              (and (= row lastrow)
+                                   (= column lastcol)))
+        hide-pinky          (fn [column row]
+                              (not (and (= last-row-count :full)
+                                        hide-last-pinky?
+                                        (last-pinky-location column row))))]
+    (concat
+     (for [column (columns inner ncols)
+           row    (range 0 lastrow)
+           :when  (case last-row-count
+                    :zero (not= row cornerrow)
+                    :two (or (not= row cornerrow))
+                    :full (not (and (= row cornerrow)
+                                    (.contains [-1 0 1] column))))]
+       (triangle-hulls
+         (key-place c column row pcb-post-bl)
+         (key-place c column row pcb-post-br)
+         (key-place c column (inc row) pcb-post-tl)
+         (if (not (and (= column -1)
+                        (= row middlerow)))
+            (key-place c column (inc row) pcb-post-tr)
+            ()))))))
 ;;;;;;;;;;;;
 ;; thumbs ;;
 ;;;;;;;;;;;;
@@ -1608,6 +1652,11 @@
      ;; makes the rendering surprisingly slow
      (translate [0 0 -60] (cube 350 350 120)))))
 
+(defn pcb-right [c]
+  (union
+   (key-holes c)
+   (pcb-column-connector c)))
+
 (defn model-left [c]
   (mirror [-1 0 0] (model-right c)))
 
@@ -1631,10 +1680,10 @@
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
 
-(def c {:configuration-nrows                    4
-        :configuration-ncols                    5
+(def c {:configuration-nrows                    6
+        :configuration-ncols                    6
         :configuration-thumb-count              :six
-        :configuration-last-row-count           :zero
+        :configuration-last-row-count           :full
         :configuration-switch-type              :box
         :configuration-inner-column             :normie
         :configuration-hide-last-pinky?         false
@@ -1675,10 +1724,14 @@
         :configuration-use-screw-inserts?       false
 
         :configuration-show-caps?               false
-        :configuration-plate-projection?        false})
+        :configuration-plate-projection?        false
+        :configuration-is-pcb?                  true})
 
 #_(spit "things/right.scad"
       (write-scad (model-right c)))
+
+(spit "things/pcb-right.scad"
+      (write-scad (pcb-right c)))
 
 #_(spit "things/right-plate.scad"
         (write-scad (plate-right c)))

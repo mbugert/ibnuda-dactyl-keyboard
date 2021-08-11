@@ -419,6 +419,10 @@
        (translate [0 0 (+ (/ web-thickness -2)
                           plate-thickness)])))
 
+(def pcb-post
+  (->> (cube 0.1 0.1 0.6)
+       (translate [0 0 0.3])))
+
 (def post-adj (/ post-size 2))
 
 ;; TODO remove the constants once lightcycle has been converted
@@ -426,10 +430,27 @@
 ;; (def web-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
 ;; (def web-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
 ;; (def web-post-br (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
-(defn web-post-tr [web-thickness] (translate [(- (/ mount-width 2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
-(defn web-post-tl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] (web-post web-thickness)))
-(defn web-post-bl [web-thickness] (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] (web-post web-thickness)))
-(defn web-post-br [web-thickness] (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] (web-post web-thickness)))
+(defn web-post-tr [web-thickness] (translate [(- (/ mount-width 2) post-adj)
+                                              (- (/ mount-height 2) post-adj)
+                                              0]
+                                             (web-post web-thickness)))
+(defn web-post-tl [web-thickness] (translate [(+ (/ mount-width -2) post-adj)
+                                              (- (/ mount-height 2) post-adj)
+                                              0]
+                                             (web-post web-thickness)))
+(defn web-post-bl [web-thickness] (translate [(+ (/ mount-width -2) post-adj)
+                                              (+ (/ mount-height -2) post-adj)
+                                              0]
+                                             (web-post web-thickness)))
+(defn web-post-br [web-thickness] (translate [(- (/ mount-width 2) post-adj)
+                                              (+ (/ mount-height -2) post-adj)
+                                              0]
+                                             (web-post web-thickness)))
+
+(def pcb-post-tr (translate [9.5 9.5 -0.6] pcb-post))
+(def pcb-post-tl (translate [-9.5 9.5 -0.6] pcb-post))
+(def pcb-post-bl (translate [-9.5 -9.5 -0.6] pcb-post))
+(def pcb-post-br (translate [9.5 -9.5 -0.6] pcb-post))
 
 ; length of the first downward-sloping part of the wall (negative)
 (def wall-z-offset -15)
