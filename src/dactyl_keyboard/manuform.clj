@@ -459,12 +459,13 @@
       (union (thumb-tr-place c shape)
              (thumb-tl-place c shape)))))
 
-(def larger-plate
-  (let [plate-height (/ (- sa-double-length mount-height) 3)
-        top-plate    (->> (cube mount-width plate-height web-thickness)
-                          (translate [0
-                                      (/ (+ plate-height mount-height -0.20) 2)
-                                      (- plate-thickness (/ web-thickness 2))]))]
+(defn larger-plate [c]
+  (let [web-thickness (get c :configuration-web-thickness)
+        plate-height  (/ (- sa-double-length mount-height) 3)
+        top-plate     (->> (cube mount-width plate-height web-thickness)
+                           (translate [0
+                                       (/ (+ plate-height mount-height -0.20) 2)
+                                       (- plate-thickness (/ web-thickness 2))]))]
     (union top-plate (mirror [0 1 0] top-plate))))
 
 (defn thumbcaps [c]
@@ -476,7 +477,7 @@
   (union
    (thumb-1x-layout c (single-plate c))
    (thumb-15x-layout c (single-plate c))
-   (thumb-15x-layout c larger-plate)))
+   (thumb-15x-layout c (larger-plate c))))
 
 (defn thumb-post-tr [web-thickness]
   (translate [(- (/ mount-width 2) post-adj)
