@@ -1624,7 +1624,7 @@
                              (screw-insert-outers screw-placement c)
                              ())
         screw-inners       (if use-screw-inserts?
-                             (translate [0 0 -2] (screw-insert-screw-holes screw-placement c))
+                             (translate [0 0 -2] (screw-insert-holes-plate screw-placement c))
                              ())
         bot                (cut (translate [0 0 -0.1] (union (case-walls c) screw-outers)))
         inner-thing        (difference (translate [0 0 -0.1] (project (union (extrude-linear {:height 5
@@ -1698,7 +1698,7 @@
                                         teensy-holder
                                           ; rj9-holder
                                         screw-insert-outers)
-                                 (translate [0 0 -10] screw-insert-screw-holes))))))
+                                 (translate [0 0 -10] screw-insert-holes-plate))))))
 
 #_(spit "things/left.scad"
         (write-scad (mirror [-1 0 0] model-right)))

@@ -1104,7 +1104,7 @@
      (translate [0 0 -0.1]
                 (difference (union (new-case c)
                                    (if use-screw-inserts? (screw-insert-outers screw-placement c) ()))
-                            (if use-screw-inserts? (translate [0 0 -10] (screw-insert-screw-holes screw-placement c)) ()))))))
+                            (if use-screw-inserts? (translate [0 0 -10] (screw-insert-holes-plate screw-placement c)) ()))))))
 
 (defn dactyl-plate-left [c]
   (mirror [-1 0 0] (dactyl-plate-right c)))

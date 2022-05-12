@@ -522,8 +522,9 @@
                       (+ screw-insert-bottom-radius 1.6)
                       (+ screw-insert-top-radius 1.6)
                       (+ screw-insert-height 1.5)))
-(defn screw-insert-screw-holes
-  "TODO: doc."
+(defn screw-insert-holes-plate
+  "TODO: doc.
+   Takes a function that places screw holes for the bottom plate of the case."
   [placement-function c]
   (placement-function c 1.7 1.7 350))
 
