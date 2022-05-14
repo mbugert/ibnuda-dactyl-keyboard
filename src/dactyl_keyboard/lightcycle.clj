@@ -1079,18 +1079,18 @@
 
 (defn dactyl-top-right [c]
   (let [use-external-holder? (get c :configuration-use-external-holder?)
-        use-screw-inserts? (get c :configuration-use-screw-inserts?)]
+        screw-inserts        (get c :configuration-screw-inserts)]
     (difference
      (union (key-holes c)
             (connectors c)
             (thumb c)
             (difference (union (new-case c)
-                               (if use-screw-inserts? (screw-placement c (screw-insert-wall c)) ())
+                               (if-not (= screw-inserts :none) (screw-placement c (screw-insert-wall c)) ())
                                (if-not use-external-holder? (usb-holder fusb-holder-position c) ()))
                         (if-not use-external-holder?
                           (union (rj9-space frj9-start c) (usb-holder-hole fusb-holder-position c))
                           (external-holder-space c))
-                        (if use-screw-inserts? (screw-placement c (screw-insert-hole c)) ()))
+                        (if-not (= screw-inserts :none) (screw-placement c (screw-insert-hole c)) ()))
             (if (get c :configuration-show-caps?) (caps c) ())
             (if (get c :configuration-show-caps?) (thumbcaps c) ())
             (if-not use-external-holder? (rj9-holder frj9-start c) ()))
@@ -1100,13 +1100,13 @@
   (mirror [-1 0 0] (dactyl-top-right c)))
 
 (defn dactyl-plate-right [c]
-  (let [use-screw-inserts? (get c :configuration-use-screw-inserts?)
-        screw-walls        (if use-screw-inserts?
-                             (screw-placement c (screw-insert-wall c))
-                             ())
-        screw-holes        (if use-screw-inserts?
-                             (screw-placement c (screw-hole c))
-                             ())]
+  (let [screw-inserts (get c :configuration-screw-inserts)
+        screw-walls   (if-not (= screw-inserts :none)
+                        (screw-placement c (screw-insert-wall c))
+                        ())
+        screw-holes   (if-not (= screw-inserts :none)
+                        (screw-placement c (screw-hole c))
+                        ())]
         (difference (cut (translate [0 0 -0.1] (union (new-case c)
                                                        screw-walls)
                      screw-holes)))))
@@ -1140,7 +1140,7 @@
         :configuration-use-border?          true
         :configuration-thick-wall?          true
 
-        :configuration-use-screw-inserts?   false
+        :configuration-screw-inserts        :none
         :configuration-show-caps?           false})
 
 #_(spit "things/lightcycle-cherry-top-right.scad"

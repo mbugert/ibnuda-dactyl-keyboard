@@ -68,7 +68,7 @@
                  :web-thickness    (get confs :configuration-web-thickness)
                  :wall-thickness   (get confs :configuration-wall-thickness)
                  :wire-post        (get confs :configuration-use-wire-post?)
-                 :screw-inserts    (get confs :configuration-use-screw-inserts?)}
+                 :screw-inserts    (get confs :configuration-screw-inserts)}
      :misc      {:keycaps    (get confs :configuration-show-caps?)
                  :right-side is-right? }}))
 
@@ -98,7 +98,7 @@
                :border          (get confs :configuration-use-border?)
                :thick-wall      (get confs :configuration-thick-wall?)}
    :misc      {:right-side    is-right?
-               :screw-inserts (get confs :configuration-use-screw-inserts?)}})
+               :screw-inserts (get confs :configuration-screw-inserts)}})
 
 (defn generate-plate-dl [confs is-right?]
   (write-scad (if is-right?

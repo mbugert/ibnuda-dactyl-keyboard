@@ -98,7 +98,10 @@
         param-wall-thickness              (parse-float (get p "form.wall-thickness"))
         param-wide-pinky                  (parse-bool (get p "form.wide-pinky"))
         param-wire-post                   (parse-bool (get p "form.wire-post"))
-        param-screw-inserts               (parse-bool (get p "form.screw-inserts"))
+        param-screw-inserts               (case (get p "form.screw-inserts")
+                                            "none" :none
+                                            "generic" :generic
+                                            "ruthex" :ruthex)
         param-thumb-cluster-offset-x      (parse-float (get p "form.thumb-cluster-offset-x"))
         param-thumb-cluster-offset-y      (parse-float (get p "form.thumb-cluster-offset-y"))
         param-thumb-cluster-offset-z      (parse-float (get p "form.thumb-cluster-offset-z"))
@@ -198,7 +201,7 @@
                                            :configuration-show-caps?                  param-show-keycaps
                                            :configuration-use-wide-pinky?             param-wide-pinky
                                            :configuration-use-wire-post?              param-wire-post
-                                           :configuration-use-screw-inserts?          param-screw-inserts
+                                           :configuration-screw-inserts               param-screw-inserts
 
                                            :is-right?                                 is-right?}
         generated-file                    (cond
@@ -298,7 +301,7 @@
 
                                    :configuration-show-caps?           param-show-keycaps
 
-                                   :configuration-use-screw-inserts?   param-screw-inserts
+                                   :configuration-screw-inserts        param-screw-inserts
 
                                    :is-right?                          is-right?}
         generated-file            (cond
@@ -386,7 +389,7 @@
                         :configuration-use-wide-pinky?             (get form :wide-pinky false)
                         :configuration-z-offset                    (get form :height-offset 4)
                         :configuration-use-wire-post?              (get form :wire-post false)
-                        :configuration-use-screw-inserts?          (get form :screw-inserts false)
+                        :configuration-screw-inserts               (get form :screw-inserts :none)
                         :configuration-web-thickness               (get form :web-thickness 7.0)
                         :configuration-wall-thickness               (get form :wall-thickness 3.0)
 
@@ -434,7 +437,7 @@
                         :configuration-use-border?          (get form :use-border true)
                         :configuration-thick-wall?          (get form :thick-wall false)
 
-                        :configuration-use-screw-inserts?   (get misc :screw-inserts false)}
+                        :configuration-screw-inserts        (get misc :screw-inserts :none)}
         generated-scad (g/generate-case-dl c (get misc :right-side true))]
     {:status  200
      :headers {"Content-Type"        "application/octet-stream"

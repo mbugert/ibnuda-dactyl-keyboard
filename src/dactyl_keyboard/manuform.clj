@@ -1571,7 +1571,7 @@
   (let [show-caps?             (get c :configuration-show-caps?)
         use-external-holder?   (get c :configuration-use-external-holder?)
         use-promicro-usb-hole? (get c :configuration-use-promicro-usb-hole?)
-        use-screw-inserts?     (get c :configuration-use-screw-inserts?)
+        screw-inserts          (get c :configuration-screw-inserts)
         connector-type         (get c :configuration-connector-type)
         use-wire-post?         (get c :configuration-use-wire-post?)]
     (difference
@@ -1588,7 +1588,7 @@
                 :rj9 (difference (case-walls c)
                                  (rj9-space frj9-start c))
                 (case-walls c))
-              (if use-screw-inserts? (screw-placement c (screw-insert-wall c)) ())
+              (if-not (= screw-inserts :none) (screw-placement c (screw-insert-wall c)) ())
               (if-not use-external-holder?
                 (case connector-type
                   :usb (union (pro-micro-holder c)
@@ -1600,7 +1600,7 @@
                               (rj9-holder frj9-start c))
                   ())
                 ()))
-       (if use-screw-inserts? (screw-placement c (screw-insert-hole c)) ())
+       (if-not (= screw-inserts :none) (screw-placement c (screw-insert-hole c)) ())
        (if-not use-external-holder?
          (case connector-type
            :usb (union  (trrs-usb-holder-space c)
@@ -1620,13 +1620,13 @@
   (mirror [-1 0 0] (model-right c)))
 
 (defn plate-right [c]
-  (let [use-screw-inserts? (get c :configuration-use-screw-inserts?)
-        screw-walls        (if use-screw-inserts?
-                             (screw-placement c (screw-insert-wall c))
-                             ())
-        screw-holes        (if use-screw-inserts?
-                             (screw-placement c (screw-hole c))
-                             ())
+  (let [screw-inserts (get c :configuration-screw-inserts)
+        screw-walls   (if-not (= screw-inserts :none)
+                        (screw-placement c (screw-insert-wall c))
+                        ())
+        screw-holes   (if-not (= screw-inserts :none)
+                        (screw-placement c (screw-hole c))
+                        ())
         plate-perimeter    (union (project screw-walls) (cut (case-walls c)))
         ; There is no operation for filling convex 2D shapes. Instead, linear
         ; extrude the 2D shape into a 3D cone, then project that again.
@@ -1680,7 +1680,7 @@
         :configuration-web-thickness            7
         :configuration-wall-thickness           3
         :configuration-use-wire-post?           false
-        :configuration-use-screw-inserts?       false
+        :configuration-screw-inserts            :none
 
         :configuration-show-caps?               false
         :configuration-plate-projection?        false})
