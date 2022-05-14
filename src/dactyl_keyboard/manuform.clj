@@ -1599,7 +1599,7 @@
                               (rj9-holder frj9-start c))
                   ())
                 ()))
-       (if use-screw-inserts? (screw-insert-holes screw-placement c) ())
+       (if use-screw-inserts? (screw-insert-hole screw-placement c) ())
        (if-not use-external-holder?
          (case connector-type
            :usb (union  (trrs-usb-holder-space c)
@@ -1624,7 +1624,7 @@
                              (screw-insert-outers screw-placement c)
                              ())
         screw-inners       (if use-screw-inserts?
-                             (translate [0 0 -2] (screw-insert-holes-plate screw-placement c))
+                             (translate [0 0 -2] (screw-insert-hole-plate screw-placement c))
                              ())
         bot                (cut (translate [0 0 -0.1] (union (case-walls c) screw-outers)))
         inner-thing        (difference (translate [0 0 -0.1] (project (union (extrude-linear {:height 5
@@ -1697,8 +1697,8 @@
                      (difference (union case-walls
                                         teensy-holder
                                           ; rj9-holder
-                                        screw-insert-outers)
-                                 (translate [0 0 -10] screw-insert-holes-plate))))))
+                                        screw-insert-wall)
+                                 (translate [0 0 -10] screw-insert-hole-plate))))))
 
 #_(spit "things/left.scad"
         (write-scad (mirror [-1 0 0] model-right)))

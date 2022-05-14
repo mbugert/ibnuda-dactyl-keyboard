@@ -1089,7 +1089,7 @@
                         (if-not use-external-holder?
                           (union (rj9-space frj9-start c) (usb-holder-hole fusb-holder-position c))
                           (external-holder-space c))
-                        (if use-screw-inserts? (screw-insert-holes screw-placement c) ()))
+                        (if use-screw-inserts? (screw-insert-hole screw-placement c) ()))
             (if (get c :configuration-show-caps?) (caps c) ())
             (if (get c :configuration-show-caps?) (thumbcaps c) ())
             (if-not use-external-holder? (rj9-holder frj9-start c) ()))
@@ -1103,8 +1103,8 @@
     (cut
      (translate [0 0 -0.1]
                 (difference (union (new-case c)
-                                   (if use-screw-inserts? (screw-insert-outers screw-placement c) ()))
-                            (if use-screw-inserts? (translate [0 0 -10] (screw-insert-holes-plate screw-placement c)) ()))))))
+                                   (if use-screw-inserts? (screw-insert-wall screw-placement c) ()))
+                            (if use-screw-inserts? (translate [0 0 -10] (screw-insert-hole-plate screw-placement c)) ()))))))
 
 (defn dactyl-plate-left [c]
   (mirror [-1 0 0] (dactyl-plate-right c)))

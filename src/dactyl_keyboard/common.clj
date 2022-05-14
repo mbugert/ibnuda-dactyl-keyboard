@@ -499,36 +499,42 @@
                    (/ (+ (last usb-holder-size) usb-holder-thickness) 2)])))
 
 (defn screw-insert-shape [bottom-radius top-radius height]
+  "Screw inserts are shaped like a frustum with a dome on top."
   (union (cylinder [bottom-radius top-radius] height)
          (translate [0 0 (/ height 2)] (sphere top-radius))))
 
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))
 (def screw-insert-top-radius (/ 5.1 2))
+(def screw-insert-wall-thickness 1.6)
 
-(defn screw-insert-holes
-  "TODO: doc.
-   but basically it takes a function that places screw holes with the following specs."
+(defn screw-insert-hole
+  "Given a function that places a screw insert's hole, creates the screw insert
+   hole."
   [placement-function c]
   (placement-function c
                       screw-insert-bottom-radius
                       screw-insert-top-radius
                       screw-insert-height))
-(defn screw-insert-outers
-  "TODO: doc.
-   but basically it takes a function that places outer parts of screw holes with the following specs."
+(defn screw-insert-wall
+  "Given a function that places a screw insert's hole, creates the wall around the
+   hole to which the screw insert will attach."
   [placement-function c]
   (placement-function c
-                      (+ screw-insert-bottom-radius 1.6)
-                      (+ screw-insert-top-radius 1.6)
-                      (+ screw-insert-height 1.5)))
-(defn screw-insert-holes-plate
-  "TODO: doc.
-   Takes a function that places screw holes for the bottom plate of the case."
+                      (+ screw-insert-bottom-radius screw-insert-wall-thickness)
+                      (+ screw-insert-top-radius screw-insert-wall-thickness)
+                      (+ screw-insert-height (- screw-insert-wall-thickness 0.1))))
+(defn screw-insert-hole-plate
+  "For the bottom plate of the case: Given a function that places a screw hole,
+   creates a through-hole for an M3 screw."
   [placement-function c]
-  (placement-function c 1.7 1.7 350))
+  (let [m3-through-hole-radius 1.7
+        max-height 350]
+    (placement-function c m3-through-hole-radius m3-through-hole-radius max-height)))
 
-(defn screw-insert [c column row bottom-radius top-radius height]
+(defn screw-insert
+  "Model-independent utility for placing and creating screw inserts."
+  [c column row bottom-radius top-radius height]
   (let [lastcol     (flastcol (get c :configuration-ncols))
         lastrow     (flastrow (get c :configuration-nrows 5))
         shift-right (= column lastcol)
