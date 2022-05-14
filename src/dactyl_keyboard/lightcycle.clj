@@ -1084,7 +1084,7 @@
             (connectors c)
             (thumb c)
             (difference (union (new-case c)
-                               (if use-screw-inserts? (screw-insert-outers screw-placement c) ())
+                               (if use-screw-inserts? (screw-insert-wall screw-placement c) ())
                                (if-not use-external-holder? (usb-holder fusb-holder-position c) ()))
                         (if-not use-external-holder?
                           (union (rj9-space frj9-start c) (usb-holder-hole fusb-holder-position c))

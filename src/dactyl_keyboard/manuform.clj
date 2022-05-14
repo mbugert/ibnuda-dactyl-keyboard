@@ -1587,7 +1587,7 @@
                 :rj9 (difference (case-walls c)
                                  (rj9-space frj9-start c))
                 (case-walls c))
-              (if use-screw-inserts? (screw-insert-outers screw-placement c) ())
+              (if use-screw-inserts? (screw-insert-wall screw-placement c) ())
               (if-not use-external-holder?
                 (case connector-type
                   :usb (union (pro-micro-holder c)
@@ -1621,7 +1621,7 @@
 (defn plate-right [c]
   (let [use-screw-inserts? (get c :configuration-use-screw-inserts?)
         screw-outers       (if use-screw-inserts?
-                             (screw-insert-outers screw-placement c)
+                             (screw-insert-wall screw-placement c)
                              ())
         screw-inners       (if use-screw-inserts?
                              (translate [0 0 -2] (screw-insert-hole-plate screw-placement c))
