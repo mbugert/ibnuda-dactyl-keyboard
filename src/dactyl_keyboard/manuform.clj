@@ -1515,7 +1515,8 @@
 (defn external-holder-space [c]
   (translate (map + (external-holder-position c) [-1.5 (* -1 wall-thickness) 3]) external-holder-cube))
 
-(defn screw-placement [c bottom-radius top-radius height]
+(defn screw-placement [c shape]
+  "Manuform-specific placement of screws."
   (let [use-wide-pinky? (get c :configuration-use-wide-pinky?)
         inner           (get c :configuration-inner-column)
         first-screw-x   (case inner
@@ -1535,11 +1536,11 @@
         var-middle-last (if is-three-mini? -0.3 (if is-five? -0 0.2))
         y-middle-last   (+ lastrow var-middle-last)
         x-middle-last   (if is-five? 1.6 2)]
-    (union (screw-insert c first-screw-x  0               bottom-radius top-radius height)
-           (screw-insert c second-screw-x (- lastrow 0.8) bottom-radius top-radius height)
-           (screw-insert c x-middle-last  y-middle-last   bottom-radius top-radius height)
-           (screw-insert c 3              0               bottom-radius top-radius height)
-           (screw-insert c lastloc        1               bottom-radius top-radius height))))
+    (union (screw-placement-common c first-screw-x  0               shape)
+           (screw-placement-common c second-screw-x (- lastrow 0.8) shape)
+           (screw-placement-common c x-middle-last  y-middle-last   shape)
+           (screw-placement-common c 3              0               shape)
+           (screw-placement-common c lastloc        1               shape))))
 
 (def wire-post-height 7)
 (def wire-post-overhang 3.5)
@@ -1587,7 +1588,7 @@
                 :rj9 (difference (case-walls c)
                                  (rj9-space frj9-start c))
                 (case-walls c))
-              (if use-screw-inserts? (screw-insert-wall screw-placement c) ())
+              (if use-screw-inserts? (screw-placement c (screw-insert-wall c)) ())
               (if-not use-external-holder?
                 (case connector-type
                   :usb (union (pro-micro-holder c)
@@ -1599,7 +1600,7 @@
                               (rj9-holder frj9-start c))
                   ())
                 ()))
-       (if use-screw-inserts? (screw-insert-hole screw-placement c) ())
+       (if use-screw-inserts? (screw-placement c (screw-insert-hole c)) ())
        (if-not use-external-holder?
          (case connector-type
            :usb (union  (trrs-usb-holder-space c)
@@ -1621,10 +1622,10 @@
 (defn plate-right [c]
   (let [use-screw-inserts? (get c :configuration-use-screw-inserts?)
         screw-outers       (if use-screw-inserts?
-                             (screw-insert-wall screw-placement c)
+                             (screw-placement c (screw-insert-wall c))
                              ())
         screw-inners       (if use-screw-inserts?
-                             (translate [0 0 -2] (screw-insert-hole-plate screw-placement c))
+                             (translate [0 0 -2] (screw-placement c (screw-insert-hole-plate c)))
                              ())
         bot                (cut (translate [0 0 -0.1] (union (case-walls c) screw-outers)))
         inner-thing        (difference (translate [0 0 -0.1] (project (union (extrude-linear {:height 5
