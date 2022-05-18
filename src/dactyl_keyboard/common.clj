@@ -498,11 +498,18 @@
                    (second (fusb-holder-position c))
                    (/ (+ (last usb-holder-size) usb-holder-thickness) 2)])))
 
-(defn screw-insert-shape [bottom-radius top-radius height]
-  "Screw inserts are shaped like a frustum with a dome on top."
-  (->> (union (cylinder [bottom-radius top-radius] height)
-              (translate [0 0 (/ height 2)] (sphere top-radius)))
-       (translate [0 0 (/ height 2)])))
+(defn screw-insert-shape
+  "Screw inserts are shaped like a cylinder with a dome on top."
+  [bottom-radius top-radius height]
+  (let [fn   20
+        cyl  (with-fn fn
+               (cylinder [bottom-radius top-radius] height))
+        dome (with-fn fn
+               (difference (sphere top-radius)
+                           (translate [0 0 (/ top-radius -2)]
+                             (cube top-radius top-radius top-radius))))]
+    (union (translate [0, 0, (/ height 2)] cyl)
+           (translate [0, 0, height] dome))))
 
 ; dimensions of M3 screw insert holes recommended by different brands of screw inserts
 (def screw-insert-hole-dimensions {:generic {:height 3.8
