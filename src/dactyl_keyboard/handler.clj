@@ -101,7 +101,8 @@
         param-screw-inserts               (case (get p "form.screw-inserts")
                                             "none" :none
                                             "generic" :generic
-                                            "ruthex" :ruthex)
+                                            "ruthex" :ruthex
+                                            :none)
         param-thumb-cluster-offset-x      (parse-float (get p "form.thumb-cluster-offset-x"))
         param-thumb-cluster-offset-y      (parse-float (get p "form.thumb-cluster-offset-y"))
         param-thumb-cluster-offset-z      (parse-float (get p "form.thumb-cluster-offset-z"))
@@ -265,7 +266,8 @@
         param-screw-inserts       (case (get p "misc.screw-inserts")
                                     "none" :none
                                     "generic" :generic
-                                    "ruthex" :ruthex)
+                                    "ruthex" :ruthex
+                                    :none)
         param-show-keycaps        (parse-bool (get p "misc.show-keycaps"))
         is-right?                 (parse-bool (get p "misc.right-side"))
 
