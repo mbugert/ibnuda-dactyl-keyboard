@@ -262,7 +262,10 @@
         param-thick-wall          (parse-bool (get p "form.thick-wall"))
 
         param-use-external-holder (parse-bool (get p "misc.external-holder"))
-        param-screw-inserts       (parse-bool (get p "misc.screw-inserts"))
+        param-screw-inserts       (case (get p "misc.screw-inserts")
+                                    "none" :none
+                                    "generic" :generic
+                                    "ruthex" :ruthex)
         param-show-keycaps        (parse-bool (get p "misc.show-keycaps"))
         is-right?                 (parse-bool (get p "misc.right-side"))
 
