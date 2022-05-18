@@ -504,23 +504,32 @@
               (translate [0 0 (/ height 2)] (sphere top-radius)))
        (translate [0 0 (/ height 2)])))
 
-(def screw-insert-height 3.8)
-(def screw-insert-bottom-radius (/ 5.31 2))
-(def screw-insert-top-radius (/ 5.1 2))
-(def screw-insert-wall-thickness 1.6)
+; dimensions of M3 screw insert holes recommended by different brands of screw inserts
+(def screw-insert-hole-dimensions {:generic {:height 3.8
+                                             :bottom-radius (/ 5.31 2)
+                                             :top-radius (/ 5.1 2)
+                                             :wall-thickness 1.6}
+                                   :ruthex  {:height 5.7
+                                             :bottom-radius (/ 4 2)
+                                             :top-radius (/ 4 2)
+                                             :wall-thickness 1.6}})
 
 (defn screw-insert-hole
   "Creates the shape of a predrilled hole for a screw insert."
   [c]
-  (screw-insert-shape screw-insert-bottom-radius
-                      screw-insert-top-radius
-                      screw-insert-height))
+  (let [inserts    (get c :configuration-screw-inserts)
+        dimensions (get screw-insert-hole-dimensions inserts)]
+    (screw-insert-shape (get dimensions :bottom-radius)
+                        (get dimensions :top-radius)
+                        (get dimensions :height))))
 (defn screw-insert-wall
   "Creates the shape of the walls around a predrilled hole for a screw insert."
   [c]
-  (screw-insert-shape (+ screw-insert-bottom-radius screw-insert-wall-thickness)
-                      (+ screw-insert-top-radius screw-insert-wall-thickness)
-                      (+ screw-insert-height (- screw-insert-wall-thickness 0.1))))
+  (let [inserts    (get c :configuration-screw-inserts)
+        dimensions (get screw-insert-hole-dimensions inserts)]
+    (screw-insert-shape (+ (get dimensions :bottom-radius) (get dimensions :wall-thickness))
+                        (+ (get dimensions :top-radius) (get dimensions :wall-thickness))
+                        (+ (get dimensions :height) (get dimensions :wall-thickness) -0.1))))
 (defn screw-hole
   "For the bottom plate of the case: creates a 2D shape of an M3 screw hole."
   [c]
