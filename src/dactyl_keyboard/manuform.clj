@@ -1621,20 +1621,20 @@
 
 (defn plate-right [c]
   (let [use-screw-inserts? (get c :configuration-use-screw-inserts?)
-        screw-outers       (if use-screw-inserts?
+        screw-walls        (if use-screw-inserts?
                              (screw-placement c (screw-insert-wall c))
                              ())
-        screw-inners       (if use-screw-inserts?
-                             (translate [0 0 -2] (screw-placement c (screw-insert-hole-plate c)))
+        screw-holes        (if use-screw-inserts?
+                             (screw-placement c (screw-hole c))
                              ())
-        bot                (cut (translate [0 0 -0.1] (union (case-walls c) screw-outers)))
-        inner-thing        (difference (translate [0 0 -0.1] (project (union (extrude-linear {:height 5
-                                                                                              :scale  0.1
-                                                                                              :center true} bot)
-                                                                             (cube 50 50 5))))
-                                       screw-inners)]
-    (difference (extrude-linear {:height 3} inner-thing)
-                screw-inners)))
+        plate-perimeter    (union (project screw-walls) (cut (case-walls c)))
+        ; There is no operation for filling convex 2D shapes. Instead, linear
+        ; extrude the 2D shape into a 3D cone, then project that again.
+        plate-filled       (project (extrude-linear {:scale 0.0
+                                                     :height 5
+                                                     :center true} plate-perimeter))]
+    (extrude-linear {:height 3}
+      (difference plate-filled screw-holes))))
 
 (defn plate-left [c]
   (mirror [-1 0 0] (plate-right c)))
@@ -1699,7 +1699,7 @@
                                         teensy-holder
                                           ; rj9-holder
                                         screw-insert-wall)
-                                 (translate [0 0 -10] screw-insert-hole-plate))))))
+                                 (translate [0 0 -10] screw-hole))))))
 
 #_(spit "things/left.scad"
         (write-scad (mirror [-1 0 0] model-right)))

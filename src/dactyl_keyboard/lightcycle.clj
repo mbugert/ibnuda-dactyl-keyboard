@@ -1100,12 +1100,16 @@
   (mirror [-1 0 0] (dactyl-top-right c)))
 
 (defn dactyl-plate-right [c]
-  (let [use-screw-inserts? (get c :configuration-use-screw-inserts?)]
-    (cut
-     (translate [0 0 -0.1]
-                (difference (union (new-case c)
-                                   (if use-screw-inserts? (screw-placement c (screw-insert-wall c)) ()))
-                            (if use-screw-inserts? (translate [0 0 -10] (screw-placement c (screw-insert-hole-plate c))) ()))))))
+  (let [use-screw-inserts? (get c :configuration-use-screw-inserts?)
+        screw-walls        (if use-screw-inserts?
+                             (screw-placement c (screw-insert-wall c))
+                             ())
+        screw-holes        (if use-screw-inserts?
+                             (screw-placement c (screw-hole c))
+                             ())]
+        (difference (cut (translate [0 0 -0.1] (union (new-case c)
+                                                       screw-walls)
+                     screw-holes)))))
 
 (defn dactyl-plate-left [c]
   (mirror [-1 0 0] (dactyl-plate-right c)))

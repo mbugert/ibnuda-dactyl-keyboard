@@ -521,15 +521,10 @@
   (screw-insert-shape (+ screw-insert-bottom-radius screw-insert-wall-thickness)
                       (+ screw-insert-top-radius screw-insert-wall-thickness)
                       (+ screw-insert-height (- screw-insert-wall-thickness 0.1))))
-(defn screw-insert-hole-plate
-  "For the bottom plate of the case: creates the shape of a through-hole that
-   fits an M3 screw"
+(defn screw-hole
+  "For the bottom plate of the case: creates a 2D shape of an M3 screw hole."
   [c]
-  (let [m3-through-hole-radius 1.7
-        max-height 350]
-    (screw-insert-shape m3-through-hole-radius
-                        m3-through-hole-radius
-                        max-height)))
+  (with-fn 20 (circle 1.7)))
 
 (defn screw-placement-common
   "Model-independent utility for positioning screw inserts based on their
