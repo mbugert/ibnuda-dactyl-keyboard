@@ -1392,7 +1392,8 @@
 (def trrs-usb-holder-cube
   (cube 17 12 2))
 (defn trrs-usb-holder-space [c]
-  (translate (map + (trrs-usb-holder-position c) [0 (* -1 wall-thickness) 1]) trrs-usb-holder-cube))
+  (let [wall-thickness (get c :configuration-wall-thickness)]
+    (translate (map + (trrs-usb-holder-position c) [0 (* -1 wall-thickness) 1]) trrs-usb-holder-cube)))
 (defn trrs-usb-holder-holder [c]
   (translate (trrs-usb-holder-position c) (cube 19 12 4)))
 
@@ -1514,7 +1515,8 @@
 (def external-holder-cube
   (cube 29.166 30 12.6))
 (defn external-holder-space [c]
-  (translate (map + (external-holder-position c) [-1.5 (* -1 wall-thickness) 3]) external-holder-cube))
+  (let [wall-thickness (get c :configuration-wall-thickness)]
+    (translate (map + (external-holder-position c) [-1.5 (* -1 wall-thickness) 3]) external-holder-cube)))
 
 (defn screw-placement [c bottom-radius top-radius height]
   (let [use-wide-pinky? (get c :configuration-use-wide-pinky?)
