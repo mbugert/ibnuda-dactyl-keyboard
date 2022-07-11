@@ -20,8 +20,11 @@ To tinker around this thing, follow these steps:
 
 ## Deployment
 
-To deploy it in a computer, follow these steps:
+With [Docker](https://docs.docker.com/engine/install/):
+1. Run `docker build -t dactyl-generator . && docker run -p 3030:3030 -it dactyl-generator`
+2. Browse to [localhost:3030](http://localhost:3030).
 
+Manual approach:
 1. Install JDK and [leiningen](https://leiningen.org/#install).
 2. Change directory to this repository.
 3. Run `lein ring uberjar`.
